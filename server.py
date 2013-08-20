@@ -12,15 +12,20 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == "POST" and request.form['entry']:
-        entry = request.form['entry']
-        json_entry = json.loads(entry)
-        g.db.insert_data({
-            "timestamp":json_entry['timestamp'],
-            "logger":json_entry['logger'],
-            "data":json_entry['data']
-        })
-        return str(entry)
+    if request.method == "POST":
+        if request.form.get('entry', None):
+            entry = request.form['entry']
+            json_entry = json.loads(entry)
+            g.db.insert_data({
+                "timestamp":json_entry['timestamp'],
+                "logger":json_entry['logger'],
+                "data":json_entry['data']
+            })
+        elif request.form.get('authentication', None):
+            pass
+        else:
+            pass
+        return "hello"
     elif request.method == "GET" :
         return "data: "+str(g.db.get_data(logger=int(request.args["logger"])))
     return "Hello"
