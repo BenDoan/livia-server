@@ -22,8 +22,15 @@ class db_handler:
 
     def get_data(self,datatype=None,logger=None):
         c = self.conn.cursor()
-
-        self.conn.execute("SELECT * FROM data WHERE logger = {}".format(logger))
+        cond = ""
+        args = []
+        if logger is not None or datatype is not none :
+            cond = "WHERE "
+        if logger is not None :
+            cond += "logger = ? "
+            args += str(logger)
+        data=self.conn.execute("SELECT * FROM data "+cond,*args).fetchall()
+        return map(lambda x :{"data":x[0],"timestamp":x[1],"logger":x[2]},data)
 
     def close(self):
         self.conn.commit()
