@@ -12,13 +12,13 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 def index():
     if request.method == "POST" and request.form['entry']:
         entry = request.form['entry']
-        json_entry = json.load(entry)
-        db.insert_data({
+        json_entry = json.loads(entry)
+        g.db.insert_data({
             "timestamp":json_entry['timestamp'],
             "logger":json_entry['logger'],
             "data":json_entry['data']
         })
-        return "Hello"
+        return str(entry)
     return "Hello"
 
 @app.before_request
