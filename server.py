@@ -19,6 +19,8 @@ def index():
             "data":json_entry['data']
         })
         return str(entry)
+    elif request.method == "GET" :
+        
     return "Hello"
 
 @app.before_request
