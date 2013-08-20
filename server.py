@@ -27,10 +27,12 @@ def index():
             return "1"
         return "hello"
     elif request.method == "GET" :
-        if "logger" in request.args :
-            return g.db.get_data(logger=int(request.args["logger"]))
-        else :
-            return g.db.get_data()
+        vals={}
+        checklist=["logger","mintime","maxtime"]
+        for check in checklist :
+            if check in request.args :
+                vals[check]=request.args[check]
+        return g.db.get_data(**vals)
     return "Hello"
 
 @app.before_request
