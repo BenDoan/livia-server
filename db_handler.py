@@ -18,7 +18,7 @@ class db_handler:
 
     def insert_data(self, data):
         c = self.conn.cursor()
-        self.conn.execute("INSERT INTO data VALUES ({}, {}, {})".format(data['data'], data['timestamp'], data['logger']))
+        self.conn.execute("INSERT INTO data VALUES (?, ?, ?)", (data['data'], data['timestamp'], data['logger']))
 
     def get_data(self,datatype=None,logger=None):
         c = self.conn.cursor()
