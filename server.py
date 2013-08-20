@@ -25,7 +25,7 @@ def index():
             return "1"
         return "hello"
     elif request.method == "GET" :
-        pass
+        return "data: "+str(g.db.get_data(logger=int(request.args["logger"])))
     return "Hello"
 
 @app.before_request
