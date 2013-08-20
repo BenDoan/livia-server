@@ -22,12 +22,15 @@ def index():
                 "data":json_entry['data']
             })
         elif request.form.get('authentication', None):
-            pass
+            return "0"
         else:
-            pass
+            return "1"
         return "hello"
     elif request.method == "GET" :
-        return "data: "+str(g.db.get_data(logger=int(request.args["logger"])))
+        if "logger" in request.args :
+            return g.db.get_data(logger=int(request.args["logger"]))
+        else :
+            return g.db.get_data()
     return "Hello"
 
 @app.before_request
