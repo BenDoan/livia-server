@@ -21,10 +21,8 @@ def index():
                 "logger":json_entry['logger'],
                 "data":json_entry['data']
             })
-        elif request.form.get('authentication', None):
-            pass
-        else:
-            pass
+        elif request.form.get('datatype', None):
+            return "1"
         return "hello"
     elif request.method == "GET" :
         pass
