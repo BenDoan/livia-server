@@ -1,7 +1,9 @@
 import json
 
 from flask import Flask, request, g
-from writer import log_writer
+from db_handler import db_handler
+
+DATABASE = '/tmp/data.db'
 
 app = Flask(__name__)
 
@@ -23,7 +25,7 @@ def index():
 
 @app.before_request
 def before_request():
-    g.db = log_writer()
+    g.db = db_handler(DATABASE)
 
 @app.teardown_request
 def teardown_request(exception):

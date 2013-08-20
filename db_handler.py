@@ -2,14 +2,14 @@
 
 import sqlite3
 
-class log_writer():
-    def __init__(self):
+class db_handler:
+    def __init__(self, name):
+        self.name = name
         self.conn = self.get_db()
-        #self.setup()
-
+        self.setup()
 
     def get_db(self):
-        return sqlite3.connect("data.db")
+        return sqlite3.connect(self.name)
 
     def setup(self):
         c = self.conn.cursor()
