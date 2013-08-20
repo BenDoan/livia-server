@@ -22,7 +22,7 @@ class db_handler:
 
     def get_data(self,datatype=None,logger=None):
         c = self.conn.cursor()
-        
+
         self.conn.execute("SELECT * FROM data WHERE logger = {}".format(logger))
 
     def close(self):

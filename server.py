@@ -22,7 +22,7 @@ def index():
         })
         return str(entry)
     elif request.method == "GET" :
-        
+        pass
     return "Hello"
 
 @app.before_request
