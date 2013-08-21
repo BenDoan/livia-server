@@ -47,7 +47,7 @@ def handle(projectname):
         if request.form.get('entry', None):
             entry = request.form['entry']
             json_entry = json.loads(entry)
-            g.db.insert_data(projectname,{
+            g.db.insert_data(projectname,request.form['key'],{
                 "timestamp":json_entry['timestamp'],
                 "logger":json_entry['logger'],
                 "data":json_entry['data']
@@ -59,8 +59,7 @@ def handle(projectname):
             if check in request.args :
                 vals[check]=request.args[check]
         return g.db.get_data(projectname,**vals)
-
-    return "I dont know what you are talking about"
+    return ":)"
 
 @app.route('/projects/<projectname>/addlogger/')
 def add_logger(projectname):

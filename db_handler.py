@@ -16,16 +16,19 @@ class db_handler:
         c.execute('''CREATE TABLE IF NOT EXISTS data
                         (data text, timestamp real, logger integer)''')
         c.execute('''CREATE TABLE IF NOT EXISTS loggers
-                        (id integer primary key asc, project text)''')
+                        (id integer primary key asc, project text, key text,description text)''')
 
 
-    def insert_data(self,project, data):
+    def insert_data(self,project,key,data):
         c = self.conn.cursor()
-        if len(self.conn.execute("SELECT * FROM loggers WHERE project == ?",(project,)).fetchall()) > 0 :
-            self.conn.execute("INSERT INTO data VALUES (?, ?, ?)", (data['data'], data['timestamp'], data['logger']))
+        if len(self.conn.execute("SELECT * FROM loggers WHERE (project == ?) AND (key == ?)",(project,key)).fetchall()) > 0 :
+            self.conn.execute("INSERT INTO data VALUES (?, ?, ?)", ( json.dumps(data['data']), data['timestamp'], data['logger']))
 
-    def add_logger(self,project):
-        return self.conn.execute("INSERT INTO loggers (project) VALUES (?)",(project,)).lastrowid
+    def add_logger(self,project,key):
+        return self.conn.execute("INSERT INTO loggers (project,key) VALUES (?,?)",(project,key)).lastrowid
+
+    def set_desc(self,logger,desc):
+        self.conn.execute("UPDATE loggers SET description = ? WHERE id == ?",(logger,desc))
 
     def get_data(self,project,logger=None,**kwargs):
         from functools import reduce
@@ -60,7 +63,7 @@ class db_handler:
     def get_loggers(self,project = None):
         out = []
         for val in self.conn.execute("SELECT * FROM loggers").fetchall() if project is None else self.conn.execute("SELECT * FROM loggers WHERE (project == ?)",(project,)).fetchall():
-            out.append({"id":val[0],"project":val[1]})
+            out.append({"id":val[0],"project":val[1],"key":val[2],"description":val[3]})
         return out
 
     def close(self):
