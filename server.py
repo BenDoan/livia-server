@@ -15,10 +15,9 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 def partials(partial):
     return send_file('partials/%s' % partial)
 
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
+@app.route('/', methods=['GET', 'POST'])
+def index():
     return make_response(open('templates/index.html').read())
-
 
 @app.route('/projects/<projectname>/', methods=['GET', 'POST'])
 def handle(projectname):
