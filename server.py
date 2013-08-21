@@ -10,8 +10,9 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+
+@app.route('/projects/<projectname>/', methods=['GET', 'POST'])
+def handle(projectname):
     if request.method == "POST":
         if request.form.get('entry', None):
             entry = request.form['entry']
