@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, request, g
+from flask import Flask, request, g, make_response, send_file
 from db_handler import db_handler
 
 DATABASE = '/tmp/data.db'
@@ -10,6 +10,14 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
+
+@app.route('/partials/<partial>')
+def partials(partial):
+    return send_file('partials/%s' % partial)
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    return make_response(open('templates/index.html').read())
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -22,11 +30,18 @@ def index():
                 "logger":json_entry['logger'],
                 "data":json_entry['data']
             })
-        elif request.form.get('datatype', None):
+        elif request.form.get('authentication', None):
+            return "0"
+        else:
             return "1"
         return "hello"
     elif request.method == "GET" :
-        return "data: "+str(g.db.get_data(logger=int(request.args.get("logger", None))))
+        vals={}
+        checklist=["logger","mintime","maxtime"]
+        for check in checklist :
+            if check in request.args :
+                vals[check]=request.args[check]
+        return g.db.get_data(**vals)
     return "Hello"
 
 @app.before_request

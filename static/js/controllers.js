@@ -1,0 +1,2 @@
+function LiviaController($scope, $http){
+}

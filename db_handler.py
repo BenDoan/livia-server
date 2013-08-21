@@ -20,17 +20,32 @@ class db_handler:
         c = self.conn.cursor()
         self.conn.execute("INSERT INTO data VALUES (?, ?, ?)", (data['data'], data['timestamp'], data['logger']))
 
-    def get_data(self,datatype=None,logger=None):
+    def get_data(self,datatype=None,logger=None,**kwargs):
+        from functools import reduce
         c = self.conn.cursor()
         cond = ""
+        conds=[]
         args = []
-        if logger is not None or datatype is not none :
-            cond = "WHERE "
+        #if logger is not None or datatype is not None :
+        #    cond = "WHERE "
         if logger is not None :
-            cond += "logger = ? "
-            args += str(logger)
-        data=self.conn.execute("SELECT * FROM data "+cond,*args).fetchall()
-        return map(lambda x :{"data":x[0],"timestamp":x[1],"logger":x[2]},data)
+            conds.append("(logger = ?)")
+            args.append(str(logger))
+        if "mintime" in kwargs :
+            conds.append("(timestamp >= ?)")
+            args.append(str(kwargs["mintime"]))
+        if "maxtime" in kwargs :
+            conds.append("(timestamp <= ?)")
+            args.append(str(kwargs["maxtime"]))
+        if len(conds)>0:
+            cond = "WHERE "+reduce(lambda x,y : x+" AND "+y,conds)
+        data=self.conn.execute("SELECT * FROM data "+cond,tuple(args)).fetchall()
+        out=[]
+        for row in data :
+            out.append('{{"logger":{},"timestamp":{},"data":"{}"}}'.format(row[2],row[1],row[0]))
+        if len(out)>0 :
+            return "[" + reduce(lambda x,y : x+","+y,out) + "]"
+        return "[]"
 
     def close(self):
         self.conn.commit()
