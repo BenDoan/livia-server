@@ -37,8 +37,8 @@ def handle(projectname):
             #return "1"
         return "hello"
     elif request.method == "GET" :
-        #if projectname == "projects" :
-        #    return str(g.db.get_projects())
+        #if projectname == "loggers" :
+        #    return str(g.db.get_loggers("asdf"))
         vals={}
         checklist=["logger","mintime","maxtime"]
         for check in checklist :

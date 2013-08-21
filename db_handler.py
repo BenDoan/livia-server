@@ -57,6 +57,12 @@ class db_handler:
             out.append(val[0])
         return out
 
+    def get_loggers(self,project = None):
+        out = []
+        for val in self.conn.execute("SELECT * FROM loggers").fetchall() if project is None else self.conn.execute("SELECT * FROM loggers WHERE (project == ?)",(project,)).fetchall():
+            out.append(tuple(val))
+        return out
+
     def close(self):
         self.conn.commit()
         self.conn.close()
