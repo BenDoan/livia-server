@@ -34,15 +34,18 @@ def handle(projectname):
         elif request.form.get('authentication', None):
             return "0"
         else:
-            return "1"
+            return str(g.db.add_logger(projectname))
+            #return "1"
         return "hello"
     elif request.method == "GET" :
+        #if projectname == "projects" :
+        #    return str(g.db.get_projects())
         vals={}
         checklist=["logger","mintime","maxtime"]
         for check in checklist :
             if check in request.args :
                 vals[check]=request.args[check]
-        return g.db.get_data(**vals)
+        return g.db.get_data(projectname,**vals)
     return "Hello"
 
 @app.before_request

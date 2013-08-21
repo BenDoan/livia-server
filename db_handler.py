@@ -14,38 +14,47 @@ class db_handler:
     def setup(self):
         c = self.conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS data
-                        (data text, timestamp real, logger real)''')
+                        (data text, timestamp real, logger integer)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS loggers
+                        (id integer primary key asc, project text)''')
+
 
     def insert_data(self, data):
         c = self.conn.cursor()
         self.conn.execute("INSERT INTO data VALUES (?, ?, ?)", (data['data'], data['timestamp'], data['logger']))
 
-    def get_data(self,datatype=None,logger=None,**kwargs):
+    def add_logger(self,project):
+        return self.conn.execute("INSERT INTO loggers (project) VALUES (?)",tuple([project])).lastrowid
+
+    def get_data(self,project,logger=None,**kwargs):
         from functools import reduce
         c = self.conn.cursor()
-        cond = ""
-        conds=[]
-        args = []
-        #if logger is not None or datatype is not None :
-        #    cond = "WHERE "
-        if logger is not None :
-            conds.append("(logger = ?)")
-            args.append(str(logger))
+        cond = "WHERE "
+        conds=["(data.logger = loggers.id)","(loggers.project = ?)"]
+        args = [project]
+        if "logger" in kwargs :
+            conds.append("(data.logger = ?)")
+            args.append(str(kwargs["logger"]))
         if "mintime" in kwargs :
-            conds.append("(timestamp >= ?)")
+            conds.append("(data.timestamp >= ?)")
             args.append(str(kwargs["mintime"]))
         if "maxtime" in kwargs :
-            conds.append("(timestamp <= ?)")
+            conds.append("(data.timestamp <= ?)")
             args.append(str(kwargs["maxtime"]))
         if len(conds)>0:
             cond = "WHERE "+reduce(lambda x,y : x+" AND "+y,conds)
-        data=self.conn.execute("SELECT * FROM data "+cond,tuple(args)).fetchall()
+        data=self.conn.execute("SELECT * FROM data,loggers "+cond,tuple(args)).fetchall()
         out=[]
         for row in data :
             out.append('{{"logger":{},"timestamp":{},"data":"{}"}}'.format(row[2],row[1],row[0]))
         if len(out)>0 :
             return "[" + reduce(lambda x,y : x+","+y,out) + "]"
         return "[]"
+    def get_projects(self):
+        out = []
+        for val in self.conn.execute("SELECT DISTINCT project FROM loggers").fetchall() :
+            out.append(val[0])
+        return out
 
     def close(self):
         self.conn.commit()
