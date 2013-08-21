@@ -1,6 +1,7 @@
 import json
 
-from flask import Flask, request, g, make_response, send_file
+from functools import wraps
+from flask import Flask, request, g, make_response, send_file, request, Response
 from db_handler import db_handler
 
 import server_state
@@ -13,15 +14,30 @@ app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
-#@app.before_first_request
-#def start():
-#    g.loggeraccept=server_state.loggeraccept()
+def check_auth(username, password):
+    return username == 'admin' and password == 'password'
+
+def authenticate():
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
 
 @app.route('/partials/<partial>')
 def partials(partial):
     return send_file('partials/%s' % partial)
 
 @app.route('/', methods=['GET', 'POST'])
+@requires_auth
 def index():
     return make_response(open('templates/index.html').read())
 
@@ -82,12 +98,6 @@ def teardown_request(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
-
-def get_data(self): return {
-                "timestamp":1376948822,
-                "logger":1,
-                "data":"5000"
-            }
 
 if __name__ == "__main__":
     app.run(host="0.0.0")
