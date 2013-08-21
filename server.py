@@ -25,7 +25,7 @@ def handle(projectname):
         if request.form.get('entry', None):
             entry = request.form['entry']
             json_entry = json.loads(entry)
-            g.db.insert_data({
+            g.db.insert_data(projectname,{
                 "timestamp":json_entry['timestamp'],
                 "logger":json_entry['logger'],
                 "data":json_entry['data']
@@ -37,8 +37,8 @@ def handle(projectname):
             #return "1"
         return "hello"
     elif request.method == "GET" :
-        #if projectname == "projects" :
-        #    return str(g.db.get_projects())
+        #if projectname == "loggers" :
+        #    return str(g.db.get_loggers("asdf"))
         vals={}
         checklist=["logger","mintime","maxtime"]
         for check in checklist :
@@ -46,6 +46,11 @@ def handle(projectname):
                 vals[check]=request.args[check]
         return g.db.get_data(projectname,**vals)
     return "Hello"
+@app.route('/loggers', methods=['GET'])
+def getloggers():
+    if "project" in request.args :
+        return json.dumps(g.db.get_loggers(request.args["project"]))
+    return json.dumps(g.db.get_loggers())
 
 @app.before_request
 def before_request():
