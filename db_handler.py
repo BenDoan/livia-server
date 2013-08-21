@@ -19,12 +19,13 @@ class db_handler:
                         (id integer primary key asc, project text)''')
 
 
-    def insert_data(self, data):
+    def insert_data(self,project, data):
         c = self.conn.cursor()
-        self.conn.execute("INSERT INTO data VALUES (?, ?, ?)", (data['data'], data['timestamp'], data['logger']))
+        if len(self.conn.execute("SELECT * FROM loggers WHERE project == ?",(project,)).fetchall()) > 0 :
+            self.conn.execute("INSERT INTO data VALUES (?, ?, ?)", (data['data'], data['timestamp'], data['logger']))
 
     def add_logger(self,project):
-        return self.conn.execute("INSERT INTO loggers (project) VALUES (?)",tuple([project])).lastrowid
+        return self.conn.execute("INSERT INTO loggers (project) VALUES (?)",(project,)).lastrowid
 
     def get_data(self,project,logger=None,**kwargs):
         from functools import reduce

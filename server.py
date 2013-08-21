@@ -26,7 +26,7 @@ def handle(projectname):
         if request.form.get('entry', None):
             entry = request.form['entry']
             json_entry = json.loads(entry)
-            g.db.insert_data({
+            g.db.insert_data(projectname,{
                 "timestamp":json_entry['timestamp'],
                 "logger":json_entry['logger'],
                 "data":json_entry['data']
