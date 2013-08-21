@@ -19,8 +19,9 @@ def partials(partial):
 def admin():
     return make_response(open('templates/index.html').read())
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+
+@app.route('/projects/<projectname>/', methods=['GET', 'POST'])
+def handle(projectname):
     if request.method == "POST":
         if request.form.get('entry', None):
             entry = request.form['entry']
