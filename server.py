@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -25,7 +26,7 @@ def index():
             return "1"
         return "hello"
     elif request.method == "GET" :
-        return "data: "+str(g.db.get_data(logger=int(request.args["logger"])))
+        return "data: "+str(g.db.get_data(logger=int(request.args.get("logger", None))))
     return "Hello"
 
 @app.before_request
