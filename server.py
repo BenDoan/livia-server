@@ -46,6 +46,11 @@ def handle(projectname):
                 vals[check]=request.args[check]
         return g.db.get_data(projectname,**vals)
     return "Hello"
+@app.route('/loggers', methods=['GET'])
+def getloggers():
+    if "project" in request.args :
+        return json.dumps(g.db.get_loggers(request.args["project"]))
+    return json.dumps(g.db.get_loggers())
 
 @app.before_request
 def before_request():
