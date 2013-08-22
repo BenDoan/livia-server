@@ -2,18 +2,14 @@ function NavController($scope, $http, $route, $location, $routeParams){
    $scope.$location = $location;
 }
 
-function LoggersController($scope, $http){
+function LoggersController($scope, $http, $location){
     $http.get('/loggers').then(function(loggers){
-        $scope.loggers = loggers.data;
+        $scope.loggers = loggers.data.reverse();
     });
-    $scope.hello = "hi";
-}
 
-function DataController($scope, $http){
-    $http.get('/projects').then(function(projects){
-        $scope.projects = projects.data;
-        for(project in projects){
-            $http.get('/loggers'
-    });
-    $scope.hello = "hi";
+    $scope.add = function(){
+        $http.get('/projects/' + $scope.logger.project + '/addlogger?description=' + $scope.logger.description).then(function(id){
+            $location.path('/loggers')
+        });
+    };
 }
