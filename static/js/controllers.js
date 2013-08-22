@@ -13,3 +13,8 @@ function LoggersController($scope, $http, $location){
         });
     };
 }
+function DataController($scope, $http, $location){
+    $http.get('/data/').then(function(data){
+        $scope.data=data.data;
+    });
+}

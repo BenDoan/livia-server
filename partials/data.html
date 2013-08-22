@@ -1,1 +1,37 @@
 <h2>Data</h2>
+<div class="panel-group" id="accordion" ng-repeat="(name,project) in data">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#Accordion_{{name}}">
+                    {{name}}
+                </a>
+            </h4>
+        </div>
+        <div id="Accordion_{{name}}" class="panel-collapse collapse">
+            <div class="panel-body">
+<table class="table table-striped table-hover">
+    <thead>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Data</th>
+    </thead>
+    <tbody>
+        <tr ng-repeat="logger in project">
+            <td>{{logger.id}}</td>
+            <td>{{logger.description}}</td>
+            <td>
+<table class="table table-striped table-hover">
+    <tr ng-repeat="datum in logger.data">
+        <td>{{datum.timestamp}}</td>
+        <td>{{datum.data}}</td>
+    </tr>
+</table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+    
+        </div>
+    </div>
+</div>
