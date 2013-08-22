@@ -71,8 +71,6 @@ def handle(projectname):
 def add_logger(projectname):
     if request.method == "GET":
         if request.args.get('description', None):
-            l = server_state.loggeraccept("loggerconfig.json")
-            l.write("loggerconfig.json")
             return str(g.db.add_logger(projectname, request.args['description']))
     return "NO SOUP FOR YOU!"
 
