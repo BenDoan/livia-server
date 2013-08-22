@@ -1,7 +1,7 @@
 import json
 
 from functools import wraps
-from flask import Flask, request, g, make_response, send_file, request, Response
+from flask import Flask, request, g, make_response, send_file, request, Response, redirect
 from db_handler import db_handler
 
 import server_state
@@ -41,13 +41,20 @@ def partials(partial):
 def index():
     return make_response(open('templates/index.html').read())
 
+@app.route('/loggers/add/', methods=['GET', 'POST'])
+@requires_auth
+def logger_add():
+    if request.method == "POST":
+        if request.form.get('description', None):
+            return redirect(flask.url_for('#/loggers'), code=307)
+
 @app.route('/projects/<projectname>/', methods=['GET', 'POST'])
 def handle(projectname):
     if request.method == "POST":
         if request.form.get('entry', None):
             entry = request.form['entry']
             json_entry = json.loads(entry)
-            g.db.insert_data(projectname,{
+            g.db.add_data(projectname,{
                 "timestamp":json_entry['timestamp'],
                 "logger":json_entry['logger'],
                 "data":json_entry['data']
@@ -59,17 +66,17 @@ def handle(projectname):
             if check in request.args :
                 vals[check]=request.args[check]
         return g.db.get_data(projectname,**vals)
-
     return "I dont know what you are talking about"
 
-@app.route('/projects/<projectname>/addlogger/')
+#TODO: add authentication
+@app.route('/projects/<projectname>/addlogger/', methods=['get'])
 def add_logger(projectname):
-    l=server_state.loggeraccept("loggerconfig.json")
-    if l.addlogger() :
-        l.write("loggerconfig.json")
-        return str(g.db.add_logger(projectname))
-    else :
-        return "NO SOUP FOR YOU!"
+    if request.method == "GET":
+        if request.args.get('description', None):
+            l = server_state.loggeraccept("loggerconfig.json")
+            l.write("loggerconfig.json")
+            return str(g.db.add_logger(projectname, request.args['description']))
+    return "NO SOUP FOR YOU!"
 
 @app.route('/register/')
 def register():
