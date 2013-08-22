@@ -59,11 +59,29 @@ def handle(projectname):
         return g.db.get_data(projectname,**vals)
     return ":)"
 
+@app.route('/projects/')
+def getprojects():
+    return json.dumps(g.db.get_projects())
+
+
 @app.route('/loggers/', methods=['GET'])
 def getloggers():
     if "project" in request.args :
         return json.dumps(g.db.get_loggers(request.args["project"]))
     return json.dumps(g.db.get_loggers())
+
+@app.route('/data/', methods = ['GET'])
+def getdatatree():
+    hide=[]
+    if "hide" in request.args :
+        hidden=json.loads(request.args["hide"])
+    projects=g.db.get_projects()
+    tree = {}
+    for project in projects :
+        tree[project]=g.db.get_loggers(project)
+        for logger in tree[project] :
+            logger["data"]=g.db.get_data(project,logger=logger["id"],**request.args)
+    return json.dumps(tree)
 
 @app.before_request
 def before_request():

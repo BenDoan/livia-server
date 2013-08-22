@@ -9,3 +9,11 @@ function LoggersController($scope, $http){
     $scope.hello = "hi";
 }
 
+function DataController($scope, $http){
+    $http.get('/projects').then(function(projects){
+        $scope.projects = projects.data;
+        for(project in projects){
+            $http.get('/loggers'
+    });
+    $scope.hello = "hi";
+}
