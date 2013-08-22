@@ -66,13 +66,11 @@ def handle(projectname):
         return g.db.get_data(projectname,**vals)
     return "I dont know what you are talking about"
 
-#TODO: add authentication
 @app.route('/projects/<projectname>/addlogger/', methods=['get'])
+@requires_auth
 def add_logger(projectname):
     if request.method == "GET":
         if request.args.get('description', None):
-            l = server_state.loggeraccept("loggerconfig.json")
-            l.write("loggerconfig.json")
             return str(g.db.add_logger(projectname, request.args['description']))
     return "NO SOUP FOR YOU!"
 
