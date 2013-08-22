@@ -58,12 +58,17 @@ def handle(projectname):
                 "data":json_entry['data']
             })
     elif request.method == "GET" :
+        from functools import reduce
         vals={}
         checklist=["logger","mintime","maxtime"]
         for check in checklist :
             if check in request.args :
                 vals[check]=request.args[check]
-        return g.db.get_data(projectname,**vals)
+        #dat = list(map(lambda x : '{{"logger":{logger},"timestamp":{timestamp},"data":"{data}"}}'.format(x),g.db.get_data(projectname,**vals)))
+        dat=list(map(str,g.db.get_data(projectname,**vals)))
+        if len(dat) :
+            return "["+reduce(lambda x,y : x + "," + y,dat) + "]"
+        return "[]"
     return "I dont know what you are talking about"
 
 #TODO: add authentication
