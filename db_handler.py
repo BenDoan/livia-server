@@ -76,7 +76,7 @@ class db_handler:
                     "id":val[0],
                     "project":val[1],
                     "description":val[2],
-                    "date":int(time.mktime(time.strptime(val[3], pattern))),
+                    "date":int(1000*time.mktime(time.strptime(val[3], pattern))),
                     "apikey":val[4]
                 })
         return out

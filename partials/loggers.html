@@ -1,19 +1,30 @@
 <h2 class="db-heading">Loggers <a href="#/loggers/new" class="btn btn-default btn-sm">Add new</a></h2>
+<input type="text" class="form-control" placeholder="search" ng-model="searchText" />
 
 <table class="table table-striped table-hover">
     <thead>
-        <th>ID</th>
-        <th>Project</th>
-        <th>Description</th>
-        <th>Date</th>
-        <th>Api Key</th>
+        <th>
+            <a href="" ng-click="predicate = 'id'; reverse=!reverse">ID</a>
+        </th>
+        <th>
+            <a href="" ng-click="predicate = 'project'; reverse=!reverse">Project</a>
+        </th>
+        <th>
+            <a href="" ng-click="predicate = 'description'; reverse=!reverse">Description</a>
+        </th>
+        <th>
+            <a href="" ng-click="predicate = 'date'; reverse=!reverse">Date</a>
+        </th>
+        <th>
+            <a href="" ng-click="predicate = 'apikey'; reverse=!reverse">Api Key</a>
+        </th>
     </thead>
     <tbody>
-        <tr ng-repeat="logger in loggers">
+        <tr ng-repeat="logger in loggers | filter:searchText | orderBy:predicate:reverse">
             <td>{{logger.id}}</td>
             <td>{{logger.project}}</td>
             <td>{{logger.description}}</td>
-            <td>{{logger.date | date:'short'}}</td>
+            <td>{{logger.date | date}}</td>
             <td>{{logger.apikey}}</td>
         </tr>
     </tbody>
