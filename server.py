@@ -71,8 +71,8 @@ def handle(projectname):
         return "[]"
     return "I dont know what you are talking about"
 
-#TODO: add authentication
 @app.route('/projects/<projectname>/addlogger/', methods=['get'])
+@requires_auth
 def add_logger(projectname):
     if request.method == "GET":
         if request.args.get('description', None):
