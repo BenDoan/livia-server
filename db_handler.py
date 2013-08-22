@@ -23,11 +23,11 @@ class db_handler:
         c.execute('''CREATE TABLE IF NOT EXISTS loggers
                         (project text, description text, date created, apikey real)''')
 
-    def is_project(project):
+    def is_project(self, project):
         return len(self.conn.execute("SELECT * FROM loggers WHERE project == ?",(project,)).fetchall()) > 0
 
     def add_data(self,project, data):
-        if is_project(project):
+        if self.is_project(project):
             return self.conn.execute("INSERT INTO data VALUES (?, ?, ?)", (data['data'], data['timestamp'], data['logger'])).lastrowid
         return None
 
@@ -71,11 +71,12 @@ class db_handler:
     def get_loggers(self,project = None):
         out = []
         for val in self.conn.execute("SELECT rowid,* FROM loggers").fetchall() if project is None else self.conn.execute("SELECT * FROM loggers WHERE (project == ?)",(project,)).fetchall():
+            pattern = "%Y-%m-%d %H:%M:%S.%f"
             out.append({
                     "id":val[0],
                     "project":val[1],
                     "description":val[2],
-                    "date":val[3],
+                    "date":int(time.mktime(time.strptime(val[3], pattern))),
                     "apikey":val[4]
                 })
         return out
