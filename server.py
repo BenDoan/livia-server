@@ -74,9 +74,10 @@ def add_data(projectname):
         if request.form.get('apikey', None) in g.db.get_api_keys():
             entry = request.form['entry']
             json_entry = json.loads(entry)
+            logger = g.db.get_logger(request.form['apikey'])
             g.db.add_data(projectname,{
                 "timestamp":json_entry['timestamp'],
-                "logger":1,
+                "logger":logger,
                 "data":json.dumps(json_entry['data'])
             })
             return "success"

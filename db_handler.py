@@ -70,10 +70,14 @@ class db_handler:
         return out
 
     def get_api_keys(self):
+        """returns a list of all api keys"""
         out = []
         for val in self.conn.execute("SELECT apikey FROM loggers").fetchall() :
             out.append(val[0])
         return out
+
+    def get_logger(self,apikey):
+        return self.conn.execute("SELECT ROWID FROM loggers WHERE apikey=?", (apikey,)).fetchone()[0]
 
     def get_loggers(self,project = None,getkey=False):
         out = []
