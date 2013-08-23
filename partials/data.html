@@ -48,7 +48,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="datum in logger.data">
-                            <td>{{datum.timestamp}}</td>
+                            <td>{{datum.timestamp | date: 'medium'}}</td>
                             <td>{{truncate(datum.data,100)}}</td>
                         </tr>
                     </tbody>

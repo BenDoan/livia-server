@@ -1,3 +1,7 @@
+"""
+TODO:
+- edit logger descriptions
+"""
 import json
 
 from functools import wraps
@@ -46,19 +50,10 @@ def index():
     """servers the angular main page"""
     return make_response(open('templates/index.html').read())
 
-@app.route('/projects/<projectname>/', methods=['GET', 'POST'])
-def handle(projectname):
-    """handles the recieving and returning data"""
-    if request.method == "POST":
-        if request.form.get('entry', None):
-            entry = request.form['entry']
-            json_entry = json.loads(entry)
-            g.db.add_data(projectname,{
-                "timestamp":json_entry['timestamp'],
-                "logger":json_entry['logger'],
-                "data":json.dumps(json_entry['data'])
-            })
-    elif request.method == "GET" :
+@app.route('/projects/<projectname>/', methods=['GET'])
+def return_data(projectname):
+    """returns data for a project in json format"""
+    if request.method == "GET" :
         from functools import reduce
         vals={}
         checklist=["logger","mintime","maxtime"]
@@ -71,6 +66,23 @@ def handle(projectname):
             return "["+reduce(lambda x,y : x + "," + y,dat) + "]"
         return "[]"
     return "I dont know what you are talking about"
+
+@app.route('/projects/<projectname>/submit', methods=['POST'])
+def add_data(projectname):
+    """used by loggers to submit data"""
+    if request.method == "POST":
+        if request.form.get('apikey', None) in g.db.get_api_keys():
+            entry = request.form['entry']
+            json_entry = json.loads(entry)
+            g.db.add_data(projectname,{
+                "timestamp":json_entry['timestamp'],
+                "logger":1,
+                "data":json.dumps(json_entry['data'])
+            })
+            return "success"
+        else:
+            return "Wrong api key: " + str(request.form.get('apikey', None))
+    return "Error"
 
 @app.route('/projects/<projectname>/addlogger/', methods=['get'])
 @requires_auth

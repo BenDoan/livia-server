@@ -65,7 +65,13 @@ class db_handler:
 
     def get_projects(self):
         out = []
-        for val in self.conn.execute("SELECT DISTINCT project FROM loggers").fetchall() :
+        for val in self.conn.execute("select distinct project from loggers").fetchall() :
+            out.append(val[0])
+        return out
+
+    def get_api_keys(self):
+        out = []
+        for val in self.conn.execute("SELECT apikey FROM loggers").fetchall() :
             out.append(val[0])
         return out
 
