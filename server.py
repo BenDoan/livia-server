@@ -55,7 +55,7 @@ def handle(projectname):
             g.db.add_data(projectname,{
                 "timestamp":json_entry['timestamp'],
                 "logger":json_entry['logger'],
-                "data":json_entry['data']
+                "data":json.dumps(json_entry['data'])
             })
     elif request.method == "GET" :
         from functools import reduce

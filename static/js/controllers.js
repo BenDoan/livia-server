@@ -19,4 +19,13 @@ function DataController($scope, $http, $location){
     $http.get('/data/').then(function(data){
         $scope.data=data.data;
     });
+    $scope.hasData = function(logger){
+        return logger.data.length!=0;
+    };
+    $scope.truncate = function(str,l){
+        if(str.length>l){
+            return str.slice(1,l-3)+"...";
+        }
+        return str;
+    };
 }
