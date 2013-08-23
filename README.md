@@ -13,3 +13,4 @@ The livia server proudly uses
 *   Flask
 *   AngularJS
 *   Bootstrap
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/a13b28f366b69c22c43fb0dca02c115c "githalytics.com")](http://githalytics.com/BenDoan/livia-server)
