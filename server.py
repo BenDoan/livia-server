@@ -61,7 +61,7 @@ def return_data(projectname):
             if check in request.args :
                 vals[check]=request.args[check]
         #dat = list(map(lambda x : '{{"logger":{logger},"timestamp":{timestamp},"data":"{data}"}}'.format(x),g.db.get_data(projectname,**vals)))
-        dat=list(map(str,g.db.get_data(projectname,**vals)))
+        dat=list(map(lambda x : '{{"timestamp":{},"logger":{},"data":{} }}'.format(x["timestamp"],x["logger"],x["data"]),g.db.get_data(projectname,**vals)))
         if len(dat) :
             return "["+reduce(lambda x,y : x + "," + y,dat) + "]"
         return "[]"
