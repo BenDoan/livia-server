@@ -10,10 +10,10 @@ from datetime import datetime
 class db_handler:
     def __init__(self, name):
         self.name = name
-        self.conn = self.get_db()
+        self.conn = self._get_db()
         self.setup()
 
-    def get_db(self):
+    def _get_db(self):
         return sqlite3.connect(self.name)
 
     def setup(self):
